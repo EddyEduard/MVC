@@ -1,4 +1,2 @@
 # MVC
-MVC (Model View Controller) is a framework for create new web applications or websites 
-very simple and esey using a few library like Bootrstrap, Fontawesome for style and jQuery 
-for animations and a interactive environmet with users.
+This project is a template based on the MVC (Model-View-Controller) architectural model created to be used in the development of websites and web applications. It is a template with a very simple folder structure, with a clear and easy code. This template can be used for creating applications / websites and for creating web services such as a Web API that provides certain data to application users. It can connect to a MySQL or SQL Server database.
