@@ -17,7 +17,7 @@ class UserModel extends Model
 
     public $Email = null;
 
-    public $Password = null;
+    public $Age = null;
 }
 
 new UserModel(MVC, "User");
