@@ -1,6 +1,6 @@
 <?php
 
-use App\Core\Bundle as Bundle;
+use App\Core\Bundle;
 
 /*
  * Include all files type of CSS.
