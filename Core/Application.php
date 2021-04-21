@@ -2,14 +2,16 @@
 
 namespace App\Core;
 
+use Exception;
+
 class Application
 {
     private $config_files = [
-        "Config", "Routers", "Bundles"
+        "Config", "Routes", "Bundles"
     ];
 
     private $core_files = [
-        "Router", "Error", "APIController", "BaseController", "Model", "Request", "Bundle"
+        "Route", "Error", "APIController", "BaseController", "Model", "Request", "Bundle"
     ];
 
     private $libraries_files = [
@@ -30,9 +32,9 @@ class Application
             $this->IncludeLibraries();
             $this->IncludeModels();
 
-            $router = new Router();
-            $router->init();
-        } catch (\Exception $exception) {
+            $route = new Route();
+            $route->init();
+        } catch (Exception $exception) {
             $error = new Error();
             $error->init($exception);
             $error->redirect("Views/Error.php");
@@ -47,7 +49,7 @@ class Application
             if (file_exists($path))
                 include $path;
             else
-                throw new \Exception("There is no a file named '{$path}'.", 404);
+                throw new Exception("There is no a file named '{$path}'.", 404);
         }
     }
 
@@ -59,7 +61,7 @@ class Application
             if (file_exists($path))
                 include $path;
             else
-                throw new \Exception("There is no a file named '{$path}'.", 404);
+                throw new Exception("There is no a file named '{$path}'.", 404);
         }
     }
 
@@ -72,7 +74,7 @@ class Application
                 if (file_exists($path))
                     include $path;
                 else
-                    throw new \Exception("There is no a file named '{$path}'.", 404);
+                    throw new Exception("There is no a file named '{$path}'.", 404);
             }
         }
     }
@@ -86,7 +88,7 @@ class Application
             if (file_exists($path))
                 include $path;
             else
-                throw new \Exception("There is no a file named '{$path}'.", 404);
+                throw new Exception("There is no a file named '{$path}'.", 404);
         }
     }
 }

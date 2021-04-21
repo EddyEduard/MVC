@@ -2,43 +2,46 @@
 
 namespace App\Core;
 
-interface RouterInterface
+use Exception;
+use ReflectionMethod;
+
+interface RouteInterface
 {
     /*
-    * Router initialization.
+    * Route initialization.
     * */
-//    function init();
+    function init();
 
     /*
      * Create request method: GET.
-     * @param $path path router
-     * @param $map map router
+     * @param $path path route
+     * @param $map map route
      * */
     static function Get($path, $map);
 
     /*
      * Create request method: POST.
-     * @param $path path router
-     * @param $map map router
+     * @param $path path route
+     * @param $map map route
      * */
     static function Post($path, $map);
 
     /*
      * Create request method: PUT.
-     * @param $path path router
-     * @param $map map router
+     * @param $path path route
+     * @param $map map route
      * */
-    static function Put($path, $map = []);
+    static function Put($path, $map);
 
     /*
      * Create request method: DELETE.
-     * @param $path path router
-     * @param $map map router
+     * @param $path path route
+     * @param $map map route
      * */
-    static function Delete($path, $map = []);
+    static function Delete($path, $map);
 }
 
-class Router implements RouterInterface
+class Route implements RouteInterface
 {
     private static $paths = [];
 
@@ -49,7 +52,7 @@ class Router implements RouterInterface
     private $paramsRoute = [];
 
     /*
-     * Router initialization.
+     * Route initialization.
      * */
     public function init()
     {
@@ -63,13 +66,13 @@ class Router implements RouterInterface
         else if ($this->isFoundRoute && !is_object($map))
             $this->callController($map["controller"], $map["action"], $this->paramsRoute);
         else
-            throw new \Exception("Invalid format router.This router no exist in config router file.", 404);
+            throw new Exception("Invalid format route.This router no exist in config route file.", 404);
     }
 
     /*
      * Create request method: GET.
-     * @param $path path router
-     * @param $map map router
+     * @param $path path route
+     * @param $map map route
      * */
     public static function Get($path, $map)
     {
@@ -83,8 +86,8 @@ class Router implements RouterInterface
 
     /*
      * Create request method: POST.
-     * @param $path path router
-     * @param $map map router
+     * @param $path path route
+     * @param $map map route
      * */
     public static function Post($path, $map)
     {
@@ -98,10 +101,10 @@ class Router implements RouterInterface
 
     /*
      * Create request method: PUT.
-     * @param $path path router
-     * @param $map map router
+     * @param $path path route
+     * @param $map map route
      * */
-    public static function Put($path, $map = [])
+    public static function Put($path, $map)
     {
         if ($_SERVER["REQUEST_METHOD"] == "PUT") {
             array_push(self::$paths, [
@@ -113,10 +116,10 @@ class Router implements RouterInterface
 
     /*
      * Create request method: DELETE.
-     * @param $path path router
-     * @param $map map router
+     * @param $path path route
+     * @param $map map route
      * */
-    public static function Delete($path, $map = [])
+    public static function Delete($path, $map)
     {
         if ($_SERVER["REQUEST_METHOD"] == "DELETE") {
             array_push(self::$paths, [
@@ -160,7 +163,7 @@ class Router implements RouterInterface
     }
 
     /*
-     * Validate content path router, get the parameters from request url and and found the router.
+     * Validate content path route, get the parameters from request url and and found the route.
      * */
     private function ValidateContentPath()
     {
@@ -185,7 +188,7 @@ class Router implements RouterInterface
             if (count($url) == count($path)) {
                 $validate_params = [];
 
-                foreach ($path as $key_path => $value_path)
+                foreach ($path as $value_path)
                     array_push($validate_params, preg_match('/[\'\\{\}\|\\\]/', $value_path));
 
                 if (array_sum($validate_params) != count($validate_params))
@@ -204,7 +207,7 @@ class Router implements RouterInterface
      * Call a controller from an file.
      * @param controller name
      * @param action name
-     * @param parameters router
+     * @param parameters route
      * */
     private function callController($controller, $action, $params = [])
     {
@@ -212,16 +215,16 @@ class Router implements RouterInterface
             require_once "Controllers/" . $controller . "Controller.php";
 
             if (class_exists($controller . "Controller") === false)
-                throw new \Exception("No exist an controller named '{$controller}'.", 404);
+                throw new Exception("No exist an controller named '{$controller}'.", 404);
 
-            $reflection = new \ReflectionMethod($controller . "Controller", $action);
+            $reflection = new ReflectionMethod($controller . "Controller", $action);
             $params_count = $reflection->getNumberOfRequiredParameters();
 
             if ($params_count != count($params))
-                throw new \Exception("Error format router.This router must to contains '{$params_count}' params.", 404);
+                throw new Exception("Error format router.This route must to contains '{$params_count}' params.", 404);
 
             call_user_func_array([$controller . "Controller", $action], $params);
         } else
-            throw new \Exception("No exist an controller file named '{$controller}'.", 404);
+            throw new Exception("No exist an controller file named '{$controller}'.", 404);
     }
 }
